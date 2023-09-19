@@ -1,7 +1,9 @@
 red
 Steve,0
 Bob,1
+Alex,4
 
 green
 Alice,2
-Charllie,3
+Charlie,3
+Izzy,5

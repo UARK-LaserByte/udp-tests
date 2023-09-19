@@ -1,37 +1,18 @@
+# traffic_generator_1.py
+#
+# This test works with the game start/end codes to have a full e2e test with the game
+# Prefer to use this over traffic_generator_0.py as it tests all UDP codes
+#
+# by Alex Prosser
+# 9/19/2023
+
 import socket
 import random
 import time
+import udp_test_common as common
 
-# UDP codes
-GAME_START = 202
-GAME_END = 221
-RED_BASE_SCORED = 66
-GREEN_BASE_SCORED = 148
-
-SOCKET_BROADCAST_PORT = 7500
-SOCKET_RECEIVE_PORT = 7501
-LOCALHOST = '127.0.0.1'
-BUFFER_SIZE = 1024
-
-NUM_EVENTS = 10
-
-red_players = []
-green_players = []
-
-# read in simple_database.txt
-with open('simple_database.txt') as file:
-	is_red = True
-	for line in file:
-		if line.strip() == 'red':
-			is_red = True
-		elif line.strip() == 'green':
-			is_red = False
-		elif line.strip() != '':
-			name, id = line.strip().split(',')
-			if is_red:
-				red_players.append((name, int(id)))
-			else:
-				green_players.append((name, int(id)))
+# read in players from simple_database.txt
+players = common.read_players(common.PLAYER_FILENAME)
 
 print('~~~~~ UDP Traffic Generator ver. 1 ~~~~~')
 print('This program will generate some test traffic from the simple_database.txt and')
@@ -43,19 +24,19 @@ socketReceive = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 socketBroadcast = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 socketBroadcast.settimeout(1)
-socketBroadcast.bind((LOCALHOST, SOCKET_BROADCAST_PORT))
+socketBroadcast.bind((common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
 
 game_started = False
 game_over_count = 0
 
 while True:
 	try:
-		data, _ = socketBroadcast.recvfrom(BUFFER_SIZE)
+		data, _ = socketBroadcast.recvfrom(common.SOCKET_BUFFER_SIZE)
 		
-		if int(data.decode()) == GAME_START:
+		if int(data.decode()) == common.UDP_GAME_START:
 			print('Game started!')
 			game_started = True
-		elif int(data.decode()) == GAME_END:
+		elif int(data.decode()) == common.UDP_GAME_END:
 			game_over_count += 1
 			if game_over_count == 3:
 				print('Game is over!')
@@ -66,22 +47,23 @@ while True:
 		pass
 
 	if game_started:
-		red = random.choice(red_players)
-		green = random.choice(green_players)
+		# Randomly choose a red and green player and an action to happen
+		red = random.choice(list(filter(lambda p: p[2], players)))
+		green = random.choice(list(filter(lambda p: not p[2], players)))
 		select = random.randint(1, 4)
 		if select == 1:
 			message = str(red[1]) + ':' + str(green[1])
 		elif select == 2:
 			message = str(green[1]) + ':' + str(red[1])
 		elif select == 3:
-			message = str(RED_BASE_SCORED) + ':' + str(green[1])
+			message = str(green[1]) + ':' + str(common.UDP_RED_BASE_SCORED)
 		else:
-			message = str(GREEN_BASE_SCORED) + ':' + str(red[1])
+			message = str(red[1]) + ':' + str(common.UDP_GREEN_BASE_SCORED)
 
+		# Send message to port 7501 and wait for next message
 		print('Sent message: ' + message)
-		socketReceive.sendto(str.encode(str(message)),
-								(LOCALHOST, SOCKET_RECEIVE_PORT))
-		time.sleep(random.randint(3, 5))
+		socketReceive.sendto(str.encode(str(message)), (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
+		time.sleep(random.randint(1, 3))
 
 print('UDP Test complete! Exiting now...')
 socketReceive.close()
