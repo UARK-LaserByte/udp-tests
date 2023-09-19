@@ -5,6 +5,11 @@ This repository tests the functionality of the UDP server that works with the la
 #### Created by Alex Prosser
 ##### Last updated: 9/19/2023
 
+## How to run
+To run `traffic_generator_0.py`, first start `server.py`, then start the test. It will send a number of events to the server without regards to the server timing (that means it can send before or after the game is over).
+
+To run `traffic_generator_1.py`, start the test, then start `server.py`. The test will listen to the server to start and stop the game.
+
 Files include:
 - [server.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/server.py)
 ```
