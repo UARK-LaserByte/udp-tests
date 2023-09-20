@@ -1,10 +1,12 @@
-# traffic_generator_1.py
-#
-# This test works with the game start/end codes to have a full e2e test with the game
-# Prefer to use this over traffic_generator_0.py as it tests all UDP codes
-#
-# by Alex Prosser
-# 9/19/2023
+"""
+traffic_generator_1.py
+
+This test works with the game start/end codes to have a full e2e test with the game
+Prefer to use this over traffic_generator_0.py as it tests all UDP codes
+
+by Alex Prosser
+9/20/2023
+"""
 
 import socket
 import random
@@ -51,6 +53,7 @@ while True:
 		red = random.choice(list(filter(lambda p: p[2], players)))
 		green = random.choice(list(filter(lambda p: not p[2], players)))
 		select = random.randint(1, 4)
+		
 		if select == 1:
 			message = str(red[1]) + ':' + str(green[1])
 		elif select == 2:

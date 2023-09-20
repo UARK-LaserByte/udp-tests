@@ -1,11 +1,13 @@
-# traffic_generator_0.py
-#
-# The first test when trying out UDP connections and how the server should respond
-# You should probably use traffic_generator_1.py for actual testing
-# This has the same functionality as https://github.com/jstrother123/team15_spring2023/blob/main/python_trafficgenarator.py
-#
-# by Alex Prosser
-# 9/19/2023
+"""
+traffic_generator_0.py
+
+The first test when trying out UDP connections and how the server should respond
+You should probably use traffic_generator_1.py for actual testing
+This has the same functionality as https://github.com/jstrother123/team15_spring2023/blob/main/python_trafficgenarator.py
+
+by Alex Prosser
+9/20/2023
+"""
 
 import socket
 import random
@@ -34,6 +36,7 @@ for _ in range(NUM_EVENTS):
 	red = random.choice(list(filter(lambda p: p[2], players)))
 	green = random.choice(list(filter(lambda p: not p[2], players)))
 	select = random.randint(1, 4)
+
 	if select == 1:
 		message = str(red[1]) + ':' + str(green[1])
 	elif select == 2:
@@ -43,10 +46,9 @@ for _ in range(NUM_EVENTS):
 	else:
 		message = str(red[1]) + ':' + str(common.UDP_GREEN_BASE_SCORED)
 
-    # Send message to port 7501 and wait for next message
+	# Send message to port 7501 and wait for next message
 	print('Sent message: ' + message)
-	socketReceive.sendto(str.encode(str(message)),
-	                     (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
+	socketReceive.sendto(str.encode(str(message)), (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
 	time.sleep(random.randint(1, 3))
 
 # Clean up code and exit safely
