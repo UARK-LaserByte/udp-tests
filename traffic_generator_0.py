@@ -6,7 +6,7 @@ You should probably use traffic_generator_1.py for actual testing
 This has the same functionality as https://github.com/jstrother123/team15_spring2023/blob/main/python_trafficgenarator.py
 
 by Alex Prosser
-9/20/2023
+10/9/2023
 """
 
 import socket
@@ -28,7 +28,7 @@ time.sleep(5)
 print('Started!')
 
 # Create datagram socket
-socketReceive = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+socket_receive = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
 # counter number of events, random player and order
 for _ in range(NUM_EVENTS):
@@ -48,9 +48,9 @@ for _ in range(NUM_EVENTS):
 
 	# Send message to port 7501 and wait for next message
 	print('Sent message: ' + message)
-	socketReceive.sendto(str.encode(str(message)), (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
+	socket_receive.sendto(str.encode(str(message)), (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
 	time.sleep(random.randint(1, 3))
 
 # Clean up code and exit safely
 print('UDP Test complete! Exiting now...')
-socketReceive.close()
+socket_receive.close()

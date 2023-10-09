@@ -5,7 +5,7 @@ This test works with the game start/end codes to have a full e2e test with the g
 Prefer to use this over traffic_generator_0.py as it tests all UDP codes
 
 by Alex Prosser
-9/20/2023
+10/9/2023
 """
 
 import socket
@@ -22,18 +22,18 @@ print('will include hits from both sides as well as base scoring\n')
 print('Waiting for game start...')
 
 # Create datagram socket
-socketReceive = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-socketBroadcast = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+socket_receive = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+socket_broadcast = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-socketBroadcast.settimeout(1)
-socketBroadcast.bind((common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+socket_broadcast.settimeout(1)
+socket_broadcast.bind((common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
 
 game_started = False
 game_over_count = 0
 
 while True:
 	try:
-		data, _ = socketBroadcast.recvfrom(common.SOCKET_BUFFER_SIZE)
+		data, _ = socket_broadcast.recvfrom(common.SOCKET_BUFFER_SIZE)
 		
 		if int(data.decode()) == common.UDP_GAME_START:
 			print('Game started!')
@@ -65,9 +65,9 @@ while True:
 
 		# Send message to port 7501 and wait for next message
 		print('Sent message: ' + message)
-		socketReceive.sendto(str.encode(str(message)), (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
+		socket_receive.sendto(str.encode(str(message)), (common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
 		time.sleep(random.randint(1, 3))
 
 print('UDP Test complete! Exiting now...')
-socketReceive.close()
-socketBroadcast.close()
+socket_receive.close()
+socket_broadcast.close()

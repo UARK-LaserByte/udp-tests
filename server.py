@@ -26,7 +26,7 @@ Chain of events:
   - Server receives it and does nothing as green player can't tag green base
 
 by Alex Prosser
-9/20/2023
+10/9/2023
 """
 
 import socket
@@ -40,13 +40,13 @@ GAME_LENGTH = 60
 players = common.read_players(common.PLAYER_FILENAME)
 
 # Create a UDP sockets
-socketReceive = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-socketBroadcast = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+socket_receive = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+socket_broadcast = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-socketReceive.settimeout(1)
+socket_receive.settimeout(1)
 
 # Bind the receive socket to the right port
-socketReceive.bind((common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
+socket_receive.bind((common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
 
 print('Starting UDP Server...')
 print('Game starting in 5 seconds...')
@@ -56,12 +56,12 @@ time.sleep(5)
 print('Game has started!')
 game_running = True
 start_time = time.time()
-socketBroadcast.sendto(str.encode(str(common.UDP_GAME_START)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+socket_broadcast.sendto(str.encode(str(common.UDP_GAME_START)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
 
 while game_running:
 	try:
 		# Receive any data that might have come in
-		data, _ = socketReceive.recvfrom(common.SOCKET_BUFFER_SIZE)
+		data, _ = socket_receive.recvfrom(common.SOCKET_BUFFER_SIZE)
 		id_transmit, id_hit = map(lambda id: int(id), data.decode().split(':'))
 		hitter = common.get_player_by_id(players, id_transmit)
 		hittee = common.get_player_by_id(players, id_hit)
@@ -79,7 +79,7 @@ while game_running:
 			else:
 				print('The player ' + hitter[0] + ' has tagged the player ' + hittee[0] + '!')
 
-			socketBroadcast.sendto(str.encode(str(id_hit)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+			socket_broadcast.sendto(str.encode(str(id_hit)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
 	except socket.timeout:
 		# No data has come in, try again
 		pass
@@ -92,8 +92,8 @@ while game_running:
 # Game has ended
 print('Game is over!')
 for _ in range(3):
-	socketBroadcast.sendto(str.encode(str(common.UDP_GAME_END)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+	socket_broadcast.sendto(str.encode(str(common.UDP_GAME_END)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
 
 # Close the sockets
-socketReceive.close()
-socketBroadcast.close()
+socket_receive.close()
+socket_broadcast.close()

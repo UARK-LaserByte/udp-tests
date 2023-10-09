@@ -3,7 +3,7 @@
 This repository tests the functionality of the UDP server that works with the laser tag system. It has an isolated server that sends and receives commands to check if the server works for the main application.
 
 #### Created by Alex Prosser
-##### Last updated: 9/20/2023
+##### Last updated: 10/9/2023
 
 ## How to run
 To run `traffic_generator_0.py`, first start `server.py`, then start the test. It will send a number of events to the server without regards to the server timing (that means it can send before or after the game is over).

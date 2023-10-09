@@ -4,7 +4,7 @@ udp_test_common.py
 Common methods and functions between the testing files
 
 by Alex Prosser
-9/20/2023
+10/9/2023
 """
 
 # UDP constants
@@ -24,7 +24,8 @@ PLAYER_FILENAME = 'simple_database.txt'
 Player = tuple[str, int, bool]
 
 def read_players(filename: str) -> list[Player]:
-	"""Reads all players from a database
+	"""
+	Reads all players from a database
 
 	Args:
 		filename: path to database
@@ -46,7 +47,8 @@ def read_players(filename: str) -> list[Player]:
 	return players
 
 def get_player_by_id(players: list[Player], id: int) -> Player | None:
-	"""Get a player from id number with players array
+	"""
+	Get a player from id number with players array
 
 	Args:
 		players: list of players from database

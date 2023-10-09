@@ -1,9 +1,5 @@
 red
-Steve,0
-Bob,1
-Alex,4
+Default,0
 
 green
-Alice,2
-Charlie,3
-Izzy,5
+Opus,1
