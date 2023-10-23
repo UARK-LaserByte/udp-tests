@@ -31,7 +31,7 @@ by Alex Prosser
 
 import socket
 import time
-import src as common
+import common
 
 # Constants
 GAME_LENGTH = 60
@@ -48,7 +48,8 @@ socket_receive.settimeout(1)
 # Bind the receive socket to the right port
 socket_receive.bind((common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
 
-print('Starting UDP Server...')
+print('~~~~~ UDP Server ~~~~~')
+print('This server is an replication of the actual server')
 print('Game starting in 5 seconds...')
 time.sleep(5)
 

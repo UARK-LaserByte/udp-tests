@@ -11,12 +11,12 @@ by Alex Prosser
 import socket
 import random
 import time
-from .. import common
+import common
 
 # read in players from simple_database.txt
 players = common.read_players(common.PLAYER_FILENAME)
 
-print('~~~~~ UDP Traffic Generator ver. 1 ~~~~~')
+print('~~~~~ UDP Traffic Generator - End to End (E2E) ~~~~~')
 print('This program will generate some test traffic from the simple_database.txt and')
 print('will include hits from both sides as well as base scoring\n')
 print('Waiting for game start...')
