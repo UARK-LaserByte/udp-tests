@@ -1,17 +1,25 @@
 """
-udp_test_common.py
+src/common.py
 
 Common methods and functions between the testing files
 
 by Alex Prosser
-10/9/2023
+10/22/2023
 """
+
+# Player model
+class Player:
+	def __init__(self, player_id: int, equipment_id: int, codename: str, team: str):
+		self.player_id = player_id
+		self.equipment_id = equipment_id
+		self.codename = codename
+		self.team = team
 
 # UDP constants
 UDP_GAME_START = 202
 UDP_GAME_END = 221
 UDP_RED_BASE_SCORED = 66
-UDP_GREEN_BASE_SCORED = 148
+UDP_GREEN_BASE_SCORED = 43
 
 # Other constants
 PORT_SOCKET_BROADCAST = 7500
@@ -19,9 +27,8 @@ PORT_SOCKET_RECEIVE = 7501
 URL_LOCALHOST = '127.0.0.1'
 SOCKET_BUFFER_SIZE = 1024
 PLAYER_FILENAME = 'simple_database.txt'
-
-# Type definitions
-Player = tuple[str, int, bool]
+RED_TEAM = 'Red'
+GREEN_TEAM = 'Green'
 
 def read_players(filename: str) -> list[Player]:
 	"""
@@ -35,15 +42,15 @@ def read_players(filename: str) -> list[Player]:
 	"""
 	players = []
 	with open(filename) as file:
-		is_red = True
+		current_team = ''
 		for line in file:
 			if line.strip() == 'red':
-				is_red = True
+				current_team = RED_TEAM
 			elif line.strip() == 'green':
-				is_red = False
+				current_team = GREEN_TEAM
 			elif line.strip() != '':
-				name, id = line.strip().split(',')
-				players.append((name, int(id), is_red))
+				name, player_id, equipment_id = line.strip().split(',')
+				players.append(Player(int(player_id), int(equipment_id), name, current_team))
 	return players
 
 def get_player_by_id(players: list[Player], id: int) -> Player | None:
@@ -58,7 +65,7 @@ def get_player_by_id(players: list[Player], id: int) -> Player | None:
 		if player found, return player; else return None
 	"""
 	for player in players:
-		if player[1] == id:
+		if player.equipment_id == id:
 			return player
 
 	return None

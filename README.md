@@ -3,12 +3,12 @@
 This repository tests the functionality of the UDP server that works with the laser tag system. It has an isolated server that sends and receives commands to check if the server works for the main application.
 
 #### Created by Alex Prosser
-##### Last updated: 10/9/2023
+##### Last updated: 10/22/2023
 
 ## How to run
-To run `traffic_generator_0.py`, first start `server.py`, then start the test. It will send a number of events to the server without regards to the server timing (that means it can send before or after the game is over).
+To run `traffic_generator.py`, first start `server.py`, then start the test. It will send a number of events to the server without regards to the server timing (that means it can send before or after the game is over).
 
-To run `traffic_generator_1.py`, start the test, then start `server.py`. The test will listen to the server to start and stop the game.
+To run `traffic_generator_e2e.py`, start the test, then start `server.py`. The test will listen to the server to start and stop the game.
 
 Files include:
 - [server.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/server.py)
@@ -37,18 +37,18 @@ Chain of events:
   - Player 1 hits Green Base which sends 1:66 to UDP port 7501
   - Server receives it and does nothing as green player can't tag green base
 ```
-- [traffic_generator_0.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/traffic_generator_0.py)
+- [traffic_generator.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/traffic_generator_0.py)
 ```
-The first test when trying out UDP connections and how the server should respond
-You should probably use traffic_generator_1.py for actual testing
+A test for trying out a fixed amount of responses for UDP connections and how the server should respond
+Use traffic_generator_e2e.py for actual testing as it tests all UDP codes
 This has the same functionality as https://github.com/jstrother123/team15_spring2023/blob/main/python_trafficgenarator.py
 ```
-- [traffic_generator_1.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/traffic_generator_1.py)
+- [traffic_generator_e2e.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/traffic_generator_1.py)
 ```
 This test works with the game start/end codes to have a full e2e test with the game
-Prefer to use this over traffic_generator_0.py as it tests all UDP codes
+For fixed amounts, use traffic_generator.py
 ```
-- [udp_test_common.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/udp_test_common.py)
+- [common.py](https://github.com/UARK-LaserByte/udp-tests/blob/main/udp_test_common.py)
 ```
 Common methods and functions between the testing files
 ```
@@ -60,12 +60,12 @@ The path is defined in udp_test_common.py under PLAYERS_FILENAME
 
 The format for this "database" is:
    red
-   name,id
-   name,id
-   name,id
+   name,player_id,equipment_id
+   name,player_id,equipment_id
+   name,player_id,equipment_id
 
    green
-   name,id
-   name,id
-   name,id
+   name,player_id,equipment_id
+   name,player_id,equipment_id
+   name,player_id,equipment_id
 ```

@@ -1,17 +1,17 @@
 """
-traffic_generator_1.py
+src/tests/traffic_generator_e2e.py
 
 This test works with the game start/end codes to have a full e2e test with the game
-Prefer to use this over traffic_generator_0.py as it tests all UDP codes
+For fixed amounts, use traffic_generator.py
 
 by Alex Prosser
-10/9/2023
+10/22/2023
 """
 
 import socket
 import random
 import time
-import udp_test_common as common
+from .. import common
 
 # read in players from simple_database.txt
 players = common.read_players(common.PLAYER_FILENAME)
@@ -50,18 +50,18 @@ while True:
 
 	if game_started:
 		# Randomly choose a red and green player and an action to happen
-		red = random.choice(list(filter(lambda p: p[2], players)))
-		green = random.choice(list(filter(lambda p: not p[2], players)))
+		red = random.choice(list(filter(lambda p: p.team == common.RED_TEAM, players)))
+		green = random.choice(list(filter(lambda p: p.team == 'Green', players)))
 		select = random.randint(1, 4)
-		
+
 		if select == 1:
-			message = str(red[1]) + ':' + str(green[1])
+			message = str(red.equipment_id) + ':' + str(green.equipment_id)
 		elif select == 2:
-			message = str(green[1]) + ':' + str(red[1])
+			message = str(green.equipment_id) + ':' + str(red.equipment_id)
 		elif select == 3:
-			message = str(green[1]) + ':' + str(common.UDP_RED_BASE_SCORED)
+			message = str(green.equipment_id) + ':' + str(common.UDP_RED_BASE_SCORED)
 		else:
-			message = str(red[1]) + ':' + str(common.UDP_GREEN_BASE_SCORED)
+			message = str(red.equipment_id) + ':' + str(common.UDP_GREEN_BASE_SCORED)
 
 		# Send message to port 7501 and wait for next message
 		print('Sent message: ' + message)

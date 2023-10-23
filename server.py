@@ -26,12 +26,12 @@ Chain of events:
   - Server receives it and does nothing as green player can't tag green base
 
 by Alex Prosser
-10/9/2023
+10/22/2023
 """
 
 import socket
 import time
-import udp_test_common as common
+import src as common
 
 # Constants
 GAME_LENGTH = 60
@@ -66,20 +66,18 @@ while game_running:
 		hitter = common.get_player_by_id(players, id_transmit)
 		hittee = common.get_player_by_id(players, id_hit)
 		
-		if hitter == None or hittee == None:
-			print('Invalid message sent. Ignoring for now...')
+		# Check if a green player has scored on red base
+		if id_hit == common.UDP_RED_BASE_SCORED and hitter.team == common.GREEN_TEAM:
+			print(f'The green player {hitter.codename} has scored on Red Base!')
+		# Check if a red player has scored on green base
+		elif id_hit == common.UDP_GREEN_BASE_SCORED and hitter.team == common.RED_TEAM:
+			print(f'The red player {hitter.codename} has scored on Green Base!')
+		# Normal tag
 		else:
-			# Check if a green player has scored on red base
-			if id_hit == common.UDP_RED_BASE_SCORED and not hitter[2]:
-				print('The green player ' + hitter[0] + ' has scored on Red Base!')
-			# Check if a red player has scored on green base
-			elif id_hit == common.UDP_GREEN_BASE_SCORED and hitter[2]:
-				print('The red player ' + hitter[0] + ' has scored on Green Base!')
-			# Normal tag
-			else:
-				print('The player ' + hitter[0] + ' has tagged the player ' + hittee[0] + '!')
+			print(f'The player {hitter.codename} has tagged the player {hittee.codename}!')
 
-			socket_broadcast.sendto(str.encode(str(id_hit)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+		socket_broadcast.sendto(str.encode(str(id_hit)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+			
 	except socket.timeout:
 		# No data has come in, try again
 		pass

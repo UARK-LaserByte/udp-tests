@@ -1,18 +1,18 @@
 """
-traffic_generator_0.py
+src/tests/traffic_generator.py
 
-The first test when trying out UDP connections and how the server should respond
-You should probably use traffic_generator_1.py for actual testing
+A test for trying out a fixed amount of responses for UDP connections and how the server should respond
+Use traffic_generator_e2e.py for actual testing as it tests all UDP codes
 This has the same functionality as https://github.com/jstrother123/team15_spring2023/blob/main/python_trafficgenarator.py
 
 by Alex Prosser
-10/9/2023
+10/22/2023
 """
 
 import socket
 import random
 import time
-import udp_test_common as common
+from .. import common
 
 # Constants
 NUM_EVENTS = 10
@@ -33,18 +33,18 @@ socket_receive = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 # counter number of events, random player and order
 for _ in range(NUM_EVENTS):
 	# Randomly choose a red and green player and an action to happen
-	red = random.choice(list(filter(lambda p: p[2], players)))
-	green = random.choice(list(filter(lambda p: not p[2], players)))
+	red = random.choice(list(filter(lambda p: p.team == common.RED_TEAM, players)))
+	green = random.choice(list(filter(lambda p: p.team == common.GREEN_TEAM, players)))
 	select = random.randint(1, 4)
 
 	if select == 1:
-		message = str(red[1]) + ':' + str(green[1])
+		message = str(red.equipment_id) + ':' + str(green.equipment_id)
 	elif select == 2:
-		message = str(green[1]) + ':' + str(red[1])
+		message = str(green.equipment_id) + ':' + str(red.equipment_id)
 	elif select == 3:
-		message = str(green[1]) + ':' + str(common.UDP_RED_BASE_SCORED)
+		message = str(green.equipment_id) + ':' + str(common.UDP_RED_BASE_SCORED)
 	else:
-		message = str(red[1]) + ':' + str(common.UDP_GREEN_BASE_SCORED)
+		message = str(red.equipment_id) + ':' + str(common.UDP_GREEN_BASE_SCORED)
 
 	# Send message to port 7501 and wait for next message
 	print('Sent message: ' + message)
