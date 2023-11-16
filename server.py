@@ -26,7 +26,7 @@ Chain of events:
   - Server receives it and does nothing as green player can't tag green base
 
 by Alex Prosser
-10/22/2023
+11/16/2023
 """
 
 import socket
@@ -36,7 +36,7 @@ import common
 # Constants
 GAME_LENGTH = 60
 
-# Read players from 'simple_database.txt' 
+# Read players from 'simple_database.txt'
 players = common.read_players(common.PLAYER_FILENAME)
 
 # Create a UDP sockets
@@ -48,50 +48,61 @@ socket_receive.settimeout(1)
 # Bind the receive socket to the right port
 socket_receive.bind((common.URL_LOCALHOST, common.PORT_SOCKET_RECEIVE))
 
-print('~~~~~ UDP Server ~~~~~')
-print('This server is an replication of the actual server')
-print('Game starting in 5 seconds...')
+print("~~~~~ UDP Server ~~~~~")
+print("This server is an replication of the actual server")
+print("Game starting in 5 seconds...")
 time.sleep(5)
 
 # Start game
-print('Game has started!')
+print("Game has started!")
 game_running = True
 start_time = time.time()
-socket_broadcast.sendto(str.encode(str(common.UDP_GAME_START)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+socket_broadcast.sendto(
+    str.encode(str(common.UDP_GAME_START)),
+    (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST),
+)
 
 while game_running:
-	try:
-		# Receive any data that might have come in
-		data, _ = socket_receive.recvfrom(common.SOCKET_BUFFER_SIZE)
-		id_transmit, id_hit = map(lambda id: int(id), data.decode().split(':'))
-		hitter = common.get_player_by_id(players, id_transmit)
-		hittee = common.get_player_by_id(players, id_hit)
-		
-		# Check if a green player has scored on red base
-		if id_hit == common.UDP_RED_BASE_SCORED and hitter.team == common.GREEN_TEAM:
-			print(f'The green player {hitter.codename} has scored on Red Base!')
-		# Check if a red player has scored on green base
-		elif id_hit == common.UDP_GREEN_BASE_SCORED and hitter.team == common.RED_TEAM:
-			print(f'The red player {hitter.codename} has scored on Green Base!')
-		# Normal tag
-		else:
-			print(f'The player {hitter.codename} has tagged the player {hittee.codename}!')
+    try:
+        # Receive any data that might have come in
+        data, _ = socket_receive.recvfrom(common.SOCKET_BUFFER_SIZE)
+        id_transmit, id_hit = map(lambda id: int(id), data.decode().split(":"))
+        hitter = common.get_player_by_id(players, id_transmit)
+        hittee = common.get_player_by_id(players, id_hit)
 
-		socket_broadcast.sendto(str.encode(str(id_hit)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
-			
-	except socket.timeout:
-		# No data has come in, try again
-		pass
+        # Check if a green player has scored on red base
+        if id_hit == common.UDP_RED_BASE_SCORED and hitter.team == common.GREEN_TEAM:
+            print(f"The green player {hitter.codename} has scored on Red Base!")
+        # Check if a red player has scored on green base
+        elif id_hit == common.UDP_GREEN_BASE_SCORED and hitter.team == common.RED_TEAM:
+            print(f"The red player {hitter.codename} has scored on Green Base!")
+        # Normal tag
+        else:
+            print(
+                f"The player {hitter.codename} has tagged the player {hittee.codename}!"
+            )
 
-	# Check if the desired duration has passed
-	elapsed_time = time.time() - start_time
-	if elapsed_time >= GAME_LENGTH:
-		game_running = False
+        socket_broadcast.sendto(
+            str.encode(str(id_hit)),
+            (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST),
+        )
+
+    except socket.timeout:
+        # No data has come in, try again
+        pass
+
+    # Check if the desired duration has passed
+    elapsed_time = time.time() - start_time
+    if elapsed_time >= GAME_LENGTH:
+        game_running = False
 
 # Game has ended
-print('Game is over!')
+print("Game is over!")
 for _ in range(3):
-	socket_broadcast.sendto(str.encode(str(common.UDP_GAME_END)), (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST))
+    socket_broadcast.sendto(
+        str.encode(str(common.UDP_GAME_END)),
+        (common.URL_LOCALHOST, common.PORT_SOCKET_BROADCAST),
+    )
 
 # Close the sockets
 socket_receive.close()
